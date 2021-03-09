@@ -28,6 +28,10 @@ app.get("/registr.html", (req, res) => {
     res.sendFile(__dirname + "/registr.html");
 });
 
+let email;
+let password;
+let sql;
+
 //отправляем данные со страницы в БД
 app.post("/registr.html", urlencodedParser, (req, res) => {
     if(!req.body) return res.sendStatus(400);
@@ -42,8 +46,8 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 	const patronymic = req.body.patronymic;
 	const birthDate = req.body.birthDate;
 	const mobilePhone = req.body.mobilePhone;
-	const email = req.body.email;
-	const password = req.body.password;
+	email = req.body.email;
+	password = req.body.password;
 	const passwordCheck = req.body.passwordCheck;
 
 	//подключаемся к БД
@@ -55,16 +59,16 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 	});
 
 	//сохраняем sql-запрос в переменную, задавай кодировку.
-	let sql = `SET NAMES 'utf8'`;
+	sql = `SET NAMES 'utf8'`;
 
 	/*
 		Отправка sql-запроса на выполнение,
 		если sql-запрос выполнился без ошибок, выводим результат выполнения,
 		иначе - данные об ошибке	
 	*/
-	connection.query(sql, function(err, results) {
+	connection.query(sql, function(err, res) {
 	    if (err) console.log(err);
-	    console.log(results);
+	    console.log(res);
 	});
 
 	//сохраняем sql-запрос в переменную для добавления полученных данных в БД в таблицу Users
@@ -72,9 +76,9 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 					mobilePhone, email, password) VALUES('${secondName}', '${firstName}', 
 					'${patronymic}', '${birthDate}', '${mobilePhone}', '${email}', '${password}')`;
 
-	connection.query(sql, function(err, results) {
+	connection.query(sql, function(err, res) {
 	    if (err) console.log(err);
-	    console.log(results);
+	    console.log(res);
 	});
 
 	connection.end();
@@ -82,28 +86,49 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
     res.sendFile(__dirname + "/registr.html");
 });
 
-	/*
+app.post("/auth.html", urlencodedParser, (req, res) => {
+    if(!req.body) return res.sendStatus(400);
+    console.log(req.body);
+
+	email = req.body.email;
+	password = req.body.password;
+
 	const connection = mysql.createConnection({
-	  database: "reg",
+	  database: "cyberInsurance",
 	  host: "localhost",
 	  user: "root",
 	  password: ""
-	});	
+	});
 
-	let sql = `SET NAMES 'utf8'`;
+	sql = `SET NAMES 'utf8'`;
 
-	connection.query(sql, function(err, results) {
+	connection.query(sql, function(err, res) {
 	    if (err) console.log(err);
-	    console.log(results);
+	    console.log(res);
 	});
 
-	sql = `SELECT * FROM people`;
- 
-	connection.query(sql, function(err, results) {
-	    if(err) console.log(err);
-	    console.log(results);
+	sql = `SELECT * FROM Users WHERE email = '${email}' and password = '${password}'`;
+
+	connection.query(sql, function(err, res) {
+	    if (err) console.log(err);
+	    console.log(res);
+	    if (!res.length) {
+	    	console.log('Неверное имя пользователя или логин!');
+	    }
 	});
-	*/
+
+	connection.end();
+
+    res.sendFile(__dirname + "/auth.html");
+
+});
 
 //"слушаем" запросы на порте 3000
 app.listen(3000);
+
+/*
+
+	Need to make:
+	1. Check if user already exist when someone try to registr.
+
+*/
