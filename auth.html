@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="public/styles/normalize.css">
+	<link rel="stylesheet" type="text/css" href="public/styles/header.css">
+	<link rel="stylesheet" type="text/css" href="public/styles/footer.css">
+	<link rel="stylesheet" type="text/css" href="public/styles/auth.css">
+	<title>Cyber Insurance</title>
+</head>
+<body>
+	<header class="header"></header>
+	<main>
+		<h1>Вход в личный кабинет</h1>
+		<form  method="post" action="/auth.html">
+			<div class="data">
+				<div class="email">
+					<label>Логин/E-mail</label>
+					<input type="text" name="user-login">
+				</div>
+				<div class="password">
+					<label>Пароль</label>
+					<input type="password" name="user-password">			
+				</div>				
+			</div>
+			<div class="newUser">
+				<div>Новый пользователь?</div>
+				<div class="registr"><a href="registr.html">Зарегистрироваться</a></div>
+			</div>
+			<button type="submit" name="login">ВОЙТИ</button>
+		</form>	
+	</main>
+	<footer class="footer"></footer>
+	<script type="text/javascript" src="public/scripts/components/header.js"></script>
+	<script type="text/javascript" src="public/scripts/components/footer.js"></script>
+</body>
+</html>

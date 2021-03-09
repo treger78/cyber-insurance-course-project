@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="public/styles/normalize.css">
+	<link rel="stylesheet" type="text/css" href="public/styles/header.css">
+	<link rel="stylesheet" type="text/css" href="public/styles/footer.css">
+	<link rel="stylesheet" type="text/css" href="public/styles/registr.css">	
+	<title>Cyber Insurance</title>
+</head>
+<body>
+	<header class="header"></header>
+	<main>
+		<h1>Регистрация нового пользователя</h1>
+		<form method="post" action="/registr.html">
+			<h2>Данные пользователя</h2>
+			<div class="userData">
+				<div>
+					<label>Фамилия</label>
+					<input type="text" id="secondName" name="secondName">
+				</div>
+				<div>
+					<label>Имя</label>
+					<input type="text" id="firstName" name="firstName">
+				</div>
+				<div>
+					<label>Отчество</label>
+					<input type="text" id="patronymic" name="patronymic">
+				</div>
+				<div>
+					<label>Дата рождения</label>
+					<input type="text" id="birthDate" name="birthDate">
+				</div>
+				<div>
+					<label>Телефон</label>
+					<input type="text" id="mobilePhone" name="mobilePhone">
+				</div>												
+			</div>
+			<h2>Данные для входа</h2>
+			<div class="authData">
+				<div>
+					<label>Email</label>
+					<input type="email" id="email" name="email">
+				</div>
+				<div>
+					<label>Пароль</label>
+					<input type="password" id="password" name="password">
+				</div>
+				<div>
+					<label>Пароль еще раз</label>
+					<input type="password" id="passwordCheck" name="passwordCheck">
+				</div>												
+			</div>
+			<button type="submit" id="button">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+		</form>
+		<div class="alreadyExist">
+			<div>Уже есть аккаунт?</div>
+			<div class="auth"><a href="auth.html">Войти</a></div>
+		</div>		
+	</main>
+	<footer class="footer"></footer>
+	<script type="text/javascript" src="public/scripts/components/header.js"></script>
+	<script type="text/javascript" src="public/scripts/components/footer.js"></script>
+	<script type="text/javascript" src="public/scripts/registr.js"></script>
+</body>
+</html>

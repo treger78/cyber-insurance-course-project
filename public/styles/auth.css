@@ -1,0 +1,65 @@
+main {
+	margin: 1rem;
+	text-align: center;
+}
+
+main h1 {
+	color: #ce253d;
+}
+
+form {
+	margin: 1rem auto;
+	background-color: #ebebeb;
+	width: 85%;
+	font-size: 14pt;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+form div {
+	margin: 1rem;
+}
+
+.data {
+	border: 1px solid black;
+	max-width: 50%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+form input {
+	height: 40px;
+	width: 20rem;
+}
+
+.password {
+	padding-top: 1rem;
+}
+
+.registr a {
+	color: #ce253d;
+}
+
+.newUser {
+	display: flex;
+	justify-content: center;
+}
+
+main button {
+	vertical-align: middle;
+	padding: 14px 19px 12px;
+	font-family: "Noto Sans",sans-serif;
+	font-size: 16px;
+	line-height: 1;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	color: #fff;
+	background-color: #ce253d;
+	border: none;
+	border-radius: 50px;
+	transition: color .5s cubic-bezier(.785,.135,.15,.86), border .5s cubic-bezier(.785,.135,.15,.86), background .5s cubic-bezier(.785,.135,.15,.86), opacity .5s cubic-bezier(.785,.135,.15,.86);
+	cursor: pointer;	
+}

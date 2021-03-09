@@ -1,0 +1,19 @@
+header {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	border-bottom: 1px solid black;
+	background-image: url(assets/#);
+}
+
+.headerLeftSection, .headerRightSection, .headerCustomerStatus {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-around;
+	margin: auto;
+}
+
+.headerCustomerStatus div, .headerRightSection div {
+	margin: 1rem;
+}
