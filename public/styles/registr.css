@@ -8,31 +8,30 @@ main h1 {
 }
 
 form {
-	margin: 1rem auto;
 	background-color: #ebebeb;
-	width: 85%;
 	font-size: 14pt;
 	padding: 1rem;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-form div {
 	margin: 1rem;
-}
-
-.userData, .authData {
-	border: 1px solid black;
-	max-width: 50%;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
 }
 
 form input {
 	height: 40px;
-	width: 20rem;
+	width: 100%;
+	margin-top: 0.5rem;
+}
+
+.userData div, .authData div {
+	margin: 1rem;
+}
+
+.userData, .authData {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	flex-wrap: wrap;
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;	
 }
 
 .auth a {
