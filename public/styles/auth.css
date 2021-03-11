@@ -8,35 +8,30 @@ main h1 {
 }
 
 form {
-	margin: 1rem auto;
 	background-color: #ebebeb;
-	width: 85%;
 	font-size: 14pt;
 	padding: 1rem;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-form div {
 	margin: 1rem;
-}
-
-.data {
-	border: 1px solid black;
-	max-width: 50%;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
 }
 
 form input {
 	height: 40px;
-	width: 20rem;
+	width: 100%;
+	margin-top: 0.5rem;
 }
 
-.password {
-	padding-top: 1rem;
+.data div, .newUser div {
+	margin: 1rem;
+}
+
+.data {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	flex-wrap: wrap;
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;	
 }
 
 .registr a {
@@ -51,7 +46,7 @@ form input {
 main button {
 	vertical-align: middle;
 	padding: 14px 19px 12px;
-	font-family: "Noto Sans",sans-serif;
+	font-family: "Noto Sans", sans-serif;
 	font-size: 16px;
 	line-height: 1;
 	letter-spacing: .1em;
