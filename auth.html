@@ -21,8 +21,11 @@
 				</div>
 				<div class="password">
 					<label>Пароль</label>
-					<input type="password" name="password" id="password">			
-				</div>				
+					<input type="password" name="password" id="password">	
+				</div>
+				{% for item in errMsg %}
+				<span> {{item|safe}}</span>
+				{% endfor %}	
 			</div>
 			<div class="newUser">
 				<div>Новый пользователь?</div>

@@ -2,8 +2,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require('mysql');
+const swig = require('swig');
 
 const app = express();
+
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+//app.set('views', __dirname + '/views');
+app.set('views', __dirname);
 
 //промежуточное ПО для получения данных из формы
 const urlencodedParser = bodyParser.urlencoded({extended: true});
@@ -26,6 +32,10 @@ app.get("/auth.html", (req, res) => {
 
 app.get("/registr.html", (req, res) => {
     res.sendFile(__dirname + "/registr.html");
+});
+
+app.get("/personal.html", (req, res) => {
+    res.sendFile(__dirname + "/personal.html");
 });
 
 let email;
@@ -109,17 +119,35 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 
 	sql = `SELECT * FROM Users WHERE email = '${email}' and password = '${password}'`;
 
-	connection.query(sql, function(err, res) {
-	    if (err) console.log(err);
-	    console.log(res);
-	    if (!res.length) {
-	    	console.log('Неверное имя пользователя или логин!');
-	    }
-	});
+	let isSuccessAuth = false;
 
-	connection.end();
+	(function isRegisteredUser() {
+		return new Promise(function(resolve, reject) {
+			connection.query(sql, function(err, res) {
+			    if (err) {
+			    	reject(err);
+			    	console.log(err);
+			    }
+			    resolve(res);
+			    console.log(res);
+			    isSuccessAuth = true;
+			    if (!res.length) {
+			    	isSuccessAuth = false;
+			    	console.log('Неверное имя пользователя или пароль!');
+			    }
+			});
+			connection.end();			
+		});
+	}())
 
-    res.sendFile(__dirname + "/auth.html");
+	.then(() => {
+		if (isSuccessAuth == true) {
+			res.sendFile(__dirname + "/personal.html");
+		} else {
+			//res.sendFile(__dirname + "/auth.html");
+			res.render('auth', {errMsg: ['Неверное имя пользователя или пароль!']});
+		}
+	})
 
 });
 

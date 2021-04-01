@@ -1,0 +1,46 @@
+main {
+	margin: 1rem;
+	text-align: center;
+}
+
+main h1 {
+	color: #ce253d;
+}
+
+.personalData {
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #ebebeb;
+	margin-top: 1.5rem;
+	margin-bottom: 1.5rem;
+	font-size: 14pt;
+}
+
+.personalDataKeys, .personalDataValues {
+	text-align: left;
+}
+
+.personalDataKeys div, .personalDataValues div {
+	margin: 1rem;
+}
+
+main button {
+	vertical-align: middle;
+	padding: 14px 19px 12px;
+	font-family: "Noto Sans",sans-serif;
+	font-size: 16px;
+	line-height: 1;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	color: #fff;
+	background-color: #ce253d;
+	border: none;
+	border-radius: 50px;
+	transition: color .5s cubic-bezier(.785,.135,.15,.86), border .5s cubic-bezier(.785,.135,.15,.86), background .5s cubic-bezier(.785,.135,.15,.86), opacity .5s cubic-bezier(.785,.135,.15,.86);
+	cursor: pointer;
+	margin: 1rem;
+	outline: none;
+}
