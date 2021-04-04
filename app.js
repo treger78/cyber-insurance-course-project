@@ -38,12 +38,16 @@ app.get("/registr.html", (req, res) => {
     res.render('registr', {});
 });
 
-app.get("/personal.html", (req, res) => {
-    res.sendFile(__dirname + "/personal.html");
-});
+let data = {
+	secondName: '',
+	firstName: '',
+	patronymic: '',
+	birthDate: '',
+	mobilePhone: 0,
+	email: '',
+	password: ''
+}
 
-let email;
-let password;
 let sql;
 
 //отправляем данные со страницы в БД
@@ -55,13 +59,13 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
     //res.send(`${req.body.secondName} - ${req.body.firstName}`);
 
     //записываем полученные по запросу данные в переменные
-	const secondName = req.body.secondName;
-	const firstName = req.body.firstName;
-	const patronymic = req.body.patronymic;
-	const birthDate = req.body.birthDate;
-	const mobilePhone = req.body.mobilePhone;
-	email = req.body.email;
-	password = req.body.password;
+	data.secondName = req.body.secondName;
+	data.firstName = req.body.firstName;
+	data.patronymic = req.body.patronymic;
+	data.birthDate = req.body.birthDate;
+	data.mobilePhone = req.body.mobilePhone;
+	data.email = req.body.email;
+	data.password = req.body.password;
 	const passwordCheck = req.body.passwordCheck;
 
 	if (password != passwordCheck) {
@@ -91,8 +95,8 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 
 	//сохраняем sql-запрос в переменную для добавления полученных данных в БД в таблицу Users
 	sql = `INSERT INTO Users(secondName, firstName, patronymic, birthDate, 
-					mobilePhone, email, password) VALUES('${secondName}', '${firstName}', 
-					'${patronymic}', '${birthDate}', '${mobilePhone}', '${email}', '${password}')`;
+					mobilePhone, email, password) VALUES('${data.secondName}', '${data.firstName}', 
+					'${data.patronymic}', '${data.birthDate}', '${data.mobilePhone}', '${data.email}', '${data.password}')`;
 
 	connection.query(sql, function(err, res) {
 	    if (err) console.log(err);
@@ -104,12 +108,14 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
     res.sendFile(__dirname + "/personal.html");
 });
 
+let isSuccessAuth = false;
+
 app.post("/auth.html", urlencodedParser, (req, res) => {
     if(!req.body) return res.sendStatus(400);
     console.log(req.body);
 
-	email = req.body.email;
-	password = req.body.password;
+	data.email = req.body.email;
+	data.password = req.body.password;
 
 	const connection = mysql.createConnection({
 	  database: "cyberInsurance",
@@ -125,9 +131,7 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 	    console.log(res);
 	});
 
-	sql = `SELECT * FROM Users WHERE email = '${email}' and password = '${password}'`;
-
-	let isSuccessAuth = false;
+	sql = `SELECT * FROM Users WHERE email = '${data.email}' and password = '${data.password}'`;
 
 	(function isRegisteredUser() {
 		return new Promise(function(resolve, reject) {
@@ -143,20 +147,44 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 			    	isSuccessAuth = false;
 			    	console.log('Неверное имя пользователя или пароль!');
 			    }
-			});
-			connection.end();			
+			});			
 		});
 	}())
-
 	.then(() => {
 		if (isSuccessAuth) {
-			res.sendFile(__dirname + "/personal.html");
+
+			(function getData() {
+				return new Promise(function(resolve, reject) {
+					sql = `SELECT * FROM Users WHERE email = '${data.email}'`;
+					connection.query(sql, function(err, res) {
+					    if (err) {
+					    	reject(err);
+					    	console.log(err);
+					    }
+					    resolve(res);
+					    console.log(res);
+						data.secondName = res[0].secondName;
+						data.firstName = res[0].firstName;
+						data.patronymic = res[0].patronymic;
+						data.birthDate = res[0].birthDate.toISOString().substr(0, 10);
+						data.mobilePhone = res[0].mobilePhone;
+					});
+					connection.end();							
+				});				
+			}())
+			.then(() => {
+				res.render('personal', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
+					birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
+			})
 		} else {
 			//res.sendFile(__dirname + "/auth.html");
 			res.render('auth', {errMsg: 'Неверное имя пользователя или пароль!'});
 		}
 	})
+});
 
+app.get("/personal.html", urlencodedParser, (req, res) => {
+    res.render('personal', {});
 });
 
 //"слушаем" запросы на порте 3000
