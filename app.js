@@ -27,11 +27,15 @@ app.get("/index.html", (req, res) => {
 });
 
 app.get("/auth.html", (req, res) => {
-    res.sendFile(__dirname + "/auth.html");
+	/*
+	т. к. на странице auth используется swig для вывода сообщений о неверном логине или пароле, 
+	страницу отображаем таким способом (изначально передавая пустой объект)
+	*/
+    res.render('auth', {});
 });
 
 app.get("/registr.html", (req, res) => {
-    res.sendFile(__dirname + "/registr.html");
+    res.render('registr', {});
 });
 
 app.get("/personal.html", (req, res) => {
@@ -59,6 +63,10 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 	email = req.body.email;
 	password = req.body.password;
 	const passwordCheck = req.body.passwordCheck;
+
+	if (password != passwordCheck) {
+		return res.render('registr', {errMsg: 'Введенные пароли не совпадают!'});
+	}
 
 	//подключаемся к БД
 	const connection = mysql.createConnection({
@@ -93,7 +101,7 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 
 	connection.end();
 
-    res.sendFile(__dirname + "/registr.html");
+    res.sendFile(__dirname + "/personal.html");
 });
 
 app.post("/auth.html", urlencodedParser, (req, res) => {
@@ -141,11 +149,11 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 	}())
 
 	.then(() => {
-		if (isSuccessAuth == true) {
+		if (isSuccessAuth) {
 			res.sendFile(__dirname + "/personal.html");
 		} else {
 			//res.sendFile(__dirname + "/auth.html");
-			res.render('auth', {errMsg: ['Неверное имя пользователя или пароль!']});
+			res.render('auth', {errMsg: 'Неверное имя пользователя или пароль!'});
 		}
 	})
 

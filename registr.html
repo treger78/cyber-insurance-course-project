@@ -18,11 +18,11 @@
 			<div class="userData">
 				<div>
 					<label>Фамилия</label>
-					<input type="text" id="secondName" name="secondName">
+					<input type="text" id="secondName" name="secondName" required minlength="2">
 				</div>
 				<div>
 					<label>Имя</label>
-					<input type="text" id="firstName" name="firstName">
+					<input type="text" id="firstName" name="firstName" required minlength="2">
 				</div>
 				<div>
 					<label>Отчество</label>
@@ -30,27 +30,28 @@
 				</div>
 				<div>
 					<label>Дата рождения</label>
-					<input type="text" id="birthDate" name="birthDate">
+					<input type="text" id="birthDate" name="birthDate" placeholder="в формате ГГГГ-ММ-ДД" required minlength="10" maxlength="10">
 				</div>
 				<div>
 					<label>Телефон</label>
-					<input type="text" id="mobilePhone" name="mobilePhone">
+					<input type="text" id="mobilePhone" name="mobilePhone" required placeholder="в формате 8900..." minlength="11" maxlength="11">
 				</div>												
 			</div>
 			<h2>Данные для входа</h2>
 			<div class="authData">
 				<div>
 					<label>Email</label>
-					<input type="email" id="email" name="email">
+					<input type="email" id="email" name="email" required>
 				</div>
 				<div>
 					<label>Пароль</label>
-					<input type="password" id="password" name="password">
+					<input type="password" id="password" name="password" required minlength="3">
 				</div>
 				<div>
 					<label>Пароль еще раз</label>
-					<input type="password" id="passwordCheck" name="passwordCheck">
-				</div>												
+					<input type="password" id="passwordCheck" name="passwordCheck" required minlength="3">
+				</div>
+				<span>{{errMsg}}</span>											
 			</div>
 			<button type="submit" id="button">ЗАРЕГИСТРИРОВАТЬСЯ</button>
 			<div class="alreadyExist">

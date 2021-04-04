@@ -17,15 +17,13 @@
 			<div class="data">
 				<div class="email">
 					<label>Логин/E-mail</label>
-					<input type="text" name="email" id="email">
+					<input type="email" name="email" id="email" required>
 				</div>
 				<div class="password">
 					<label>Пароль</label>
-					<input type="password" name="password" id="password">	
+					<input type="password" name="password" id="password" required>	
 				</div>
-				{% for item in errMsg %}
-				<span> {{item|safe}}</span>
-				{% endfor %}	
+				<span>{{errMsg}}</span>
 			</div>
 			<div class="newUser">
 				<div>Новый пользователь?</div>
