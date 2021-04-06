@@ -50,6 +50,42 @@ let data = {
 
 let sql;
 
+function getData() {
+	return new Promise(function(resolve, reject) {
+
+		const connection = mysql.createConnection({
+		  database: "cyberInsurance",
+		  host: "localhost",
+		  user: "root",
+		  password: ""
+		});
+
+		sql = `SET NAMES 'utf8'`;
+
+		connection.query(sql, function(err, res) {
+		    if (err) console.log(err);
+		    console.log(res);
+		});
+
+		sql = `SELECT * FROM Users WHERE email = '${data.email}'`;
+		
+		connection.query(sql, function(err, res) {
+		    if (err) {
+		    	reject(err);
+		    	console.log(err);
+		    }
+		    resolve(res);
+		    console.log(res);
+			data.secondName = res[0].secondName;
+			data.firstName = res[0].firstName;
+			data.patronymic = res[0].patronymic;
+			data.birthDate = res[0].birthDate.toISOString().substr(0, 10);
+			data.mobilePhone = res[0].mobilePhone;
+		});
+
+	});				
+}
+
 //отправляем данные со страницы в БД
 app.post("/registr.html", urlencodedParser, (req, res) => {
     if(!req.body) return res.sendStatus(400);
@@ -67,10 +103,6 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 	data.email = req.body.email;
 	data.password = req.body.password;
 	const passwordCheck = req.body.passwordCheck;
-
-	if (password != passwordCheck) {
-		return res.render('registr', {errMsg: 'Введенные пароли не совпадают!'});
-	}
 
 	//подключаемся к БД
 	const connection = mysql.createConnection({
@@ -93,19 +125,51 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 	    console.log(res);
 	});
 
-	//сохраняем sql-запрос в переменную для добавления полученных данных в БД в таблицу Users
-	sql = `INSERT INTO Users(secondName, firstName, patronymic, birthDate, 
-					mobilePhone, email, password) VALUES('${data.secondName}', '${data.firstName}', 
-					'${data.patronymic}', '${data.birthDate}', '${data.mobilePhone}', '${data.email}', '${data.password}')`;
+	sql = `SELECT * FROM Users WHERE email = '${data.email}'`;
 
-	connection.query(sql, function(err, res) {
-	    if (err) console.log(err);
-	    console.log(res);
-	});
+	let isAlreadyExistUser = false;
 
-	connection.end();
+	(function isExistUser() {
+		return new Promise(function(resolve, reject) {
+			connection.query(sql, function(err, res) {
+			    if (err) {
+			    	reject(err);
+			    	console.log(err);
+			    }
+			    resolve(res);
+			    console.log(res);
+			    if (res.length != 0) {
+			    	isAlreadyExistUser = true;
+			    }
+			});			
+		});
+	}())
+	.then(() => {
+		if (data.password != passwordCheck) {
+			return res.render('registr', {passwordErrMsg: 'Введенные пароли не совпадают!'});
+		}
+		if (isAlreadyExistUser) {
+			return res.render('registr', {isAlreadyExistUserErr: 'Пользователь с таким email уже существует!'});
+		} else {
+			//сохраняем sql-запрос в переменную для добавления полученных данных в БД в таблицу Users
+			sql = `INSERT INTO Users(secondName, firstName, patronymic, birthDate, 
+							mobilePhone, email, password) VALUES('${data.secondName}', '${data.firstName}', 
+							'${data.patronymic}', '${data.birthDate}', '${data.mobilePhone}', '${data.email}', '${data.password}')`;
 
-    res.sendFile(__dirname + "/personal.html");
+			connection.query(sql, function(err, res) {
+			    if (err) console.log(err);
+			    console.log(res);
+			});		
+		    getData()
+		    .then(() => {
+				res.render('personal', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
+					birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
+		    });
+		}
+	    
+	    connection.end();
+	})
+
 });
 
 let isSuccessAuth = false;
@@ -133,7 +197,7 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 
 	sql = `SELECT * FROM Users WHERE email = '${data.email}' and password = '${data.password}'`;
 
-	(function isRegisteredUser() {
+	(function isCorrectValue() {
 		return new Promise(function(resolve, reject) {
 			connection.query(sql, function(err, res) {
 			    if (err) {
@@ -152,32 +216,13 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 	}())
 	.then(() => {
 		if (isSuccessAuth) {
-
-			(function getData() {
-				return new Promise(function(resolve, reject) {
-					sql = `SELECT * FROM Users WHERE email = '${data.email}'`;
-					connection.query(sql, function(err, res) {
-					    if (err) {
-					    	reject(err);
-					    	console.log(err);
-					    }
-					    resolve(res);
-					    console.log(res);
-						data.secondName = res[0].secondName;
-						data.firstName = res[0].firstName;
-						data.patronymic = res[0].patronymic;
-						data.birthDate = res[0].birthDate.toISOString().substr(0, 10);
-						data.mobilePhone = res[0].mobilePhone;
-					});
-					connection.end();							
-				});				
-			}())
+			getData()
 			.then(() => {
 				res.render('personal', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
 					birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
 			})
+			connection.end();
 		} else {
-			//res.sendFile(__dirname + "/auth.html");
 			res.render('auth', {errMsg: 'Неверное имя пользователя или пароль!'});
 		}
 	})
