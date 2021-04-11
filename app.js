@@ -468,16 +468,9 @@ app.post("/buy.html", urlencodedParser, (req, res) => {
 
 	connection.end();
 
-    res.render('buy', {successful: `Cтоимость ОСАГО составит ${OSAGOPrice} руб.`});
+    res.render('buy', {successful: `ОСАГО успешно оформлено за ${OSAGOPrice} руб.`});
 
 });
 
 //"слушаем" запросы на порте 3000
 app.listen(3000);
-
-/*
-
-	Need to make:
-	1. Check if user already exist when someone try to registr.
-
-*/
