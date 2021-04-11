@@ -26,16 +26,35 @@ app.get("/index.html", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
+app.get("/registr.html", (req, res) => {
+    res.render('registr', {});
+});
+
 app.get("/auth.html", (req, res) => {
 	/*
 	т. к. на странице auth используется swig для вывода сообщений о неверном логине или пароле, 
 	страницу отображаем таким способом (изначально передавая пустой объект)
 	*/
-    res.render('auth', {});
+
+	if (data.ID == -1) {
+		res.render('auth', {});
+	} else {
+		res.render('personal', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
+			birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
+	}
+
 });
 
-app.get("/registr.html", (req, res) => {
-    res.render('registr', {});
+app.get("/cars.html", (req, res) => {
+    res.render('cars', {});
+});
+
+app.get("/buy.html", (req, res) => {
+	if (data.ID == -1) {
+		res.render('auth', {});
+	} else {
+		res.render('buy', {});
+	}
 });
 
 let data = {
@@ -45,7 +64,8 @@ let data = {
 	birthDate: '',
 	mobilePhone: 0,
 	email: '',
-	password: ''
+	password: '',
+	ID: -1
 }
 
 let sql;
@@ -63,7 +83,9 @@ function getDBData() {
 		sql = `SET NAMES 'utf8'`;
 
 		connection.query(sql, function(err, res) {
-		    if (err) console.log(err);
+		    if (err) {
+		    	console.log(err);
+		    }
 		    console.log(res);
 		});
 
@@ -81,6 +103,7 @@ function getDBData() {
 			data.patronymic = res[0].patronymic;
 			data.birthDate = res[0].birthDate.toISOString().substr(0, 10);
 			data.mobilePhone = res[0].mobilePhone;
+			data.ID = res[0].ID;
 		});
 
 	});				
@@ -88,7 +111,9 @@ function getDBData() {
 
 //отправляем данные со страницы в БД
 app.post("/registr.html", urlencodedParser, (req, res) => {
-    if (!req.body) return res.sendStatus(400);
+    if (!req.body) {
+    	return res.sendStatus(400);
+    }
     //выводим полученные в результате запроса данные в коносль (node)
     console.log(req.body);
     //посылаем и отображаем данные на странице (клиент)
@@ -121,7 +146,9 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 		иначе - данные об ошибке	
 	*/
 	connection.query(sql, function(err, res) {
-	    if (err) console.log(err);
+	    if (err) {
+	    	console.log(err);
+	    }
 	    console.log(res);
 	});
 
@@ -157,7 +184,9 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 							'${data.patronymic}', '${data.birthDate}', '${data.mobilePhone}', '${data.email}', '${data.password}')`;
 
 			connection.query(sql, function(err, res) {
-			    if (err) console.log(err);
+			    if (err) {
+			    	console.log(err);
+			    }
 			    console.log(res);
 			});		
 		    getDBData()
@@ -175,7 +204,9 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 let isSuccessAuth = false;
 
 app.post("/auth.html", urlencodedParser, (req, res) => {
-    if (!req.body) return res.sendStatus(400);
+    if (!req.body) {
+    	return res.sendStatus(400);
+    }
     console.log(req.body);
 
 	data.email = req.body.email;
@@ -191,7 +222,9 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 	sql = `SET NAMES 'utf8'`;
 
 	connection.query(sql, function(err, res) {
-	    if (err) console.log(err);
+	    if (err) {
+	    	console.log(err);
+	    }
 	    console.log(res);
 	});
 
@@ -225,7 +258,7 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 		} else {
 			res.render('auth', {errMsg: 'Неверное имя пользователя или пароль!'});
 		}
-	})
+	});
 });
 
 app.get("/personal.html", urlencodedParser, (req, res) => {
@@ -235,7 +268,9 @@ app.get("/personal.html", urlencodedParser, (req, res) => {
 let currentUserEmail;
 
 app.post("/personal.html", urlencodedParser, (req, res) => {
-    if (!req.body) return res.sendStatus(400);
+    if (!req.body) {
+    	return res.sendStatus(400);
+    }
     console.log(req.body);
 
 	data.secondName = req.body.secondName;
@@ -256,7 +291,9 @@ app.get("/personal-change.html", urlencodedParser, (req, res) => {
 });
 
 app.post("/personal-change.html", urlencodedParser, (req, res) => {
-    if (!req.body) return res.sendStatus(400);
+    if (!req.body) {
+    	return res.sendStatus(400);
+    }
     console.log(req.body);
 
 	data.secondName = req.body.secondName;
@@ -276,7 +313,9 @@ app.post("/personal-change.html", urlencodedParser, (req, res) => {
 	sql = `SET NAMES 'utf8'`;
 
 	connection.query(sql, function(err, res) {
-	    if (err) console.log(err);
+	    if (err) {
+	    	console.log(err);
+	    }
 	    console.log(res);
 	});
 
@@ -285,12 +324,151 @@ app.post("/personal-change.html", urlencodedParser, (req, res) => {
 		WHERE email = '${currentUserEmail}'`;
 
 	connection.query(sql, function(err, res) {
-	    if (err) console.log(err);
+	    if (err) {
+	    	console.log(err);
+	    }
 	    console.log(res);
 	});
 
+	connection.end();
+
 	res.render('personal', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
-		birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});		
+		birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
+
+});
+
+const baseValue = 5000; //базовый тариф страховки
+let enginePower;
+let engineCoef;
+let OSAGOPrice;
+
+app.post("/cars.html", urlencodedParser, (req, res) => {
+    if (!req.body) {
+    	return res.sendStatus(400);
+    }
+    console.log(req.body);
+
+    enginePower = req.body.enginePower;
+
+    //значения взяты с https://www.garant.ru/article/1409829/
+    if (enginePower <= 50) {
+    	engineCoef = 0.6;
+    } else if (enginePower <= 70) {
+    	engineCoef = 1;
+    } else if (enginePower <= 100) {
+    	engineCoef = 1.1;
+    } else if (enginePower <= 120) {
+    	engineCoef = 1.2;
+    } else if (enginePower <= 150) {
+    	engineCoef = 1.4;
+    } else if (enginePower > 150) {
+    	engineCoef = 1.6;
+    } else {
+    	return res.render('cars', {incorrectValue: "Введено неверное значение мощности двигателя!"});
+    }
+
+    OSAGOPrice = baseValue * engineCoef;
+
+    res.render('cars', {insurancePrice: `Cтоимость ОСАГО составит ${OSAGOPrice} руб.`});
+
+});
+
+app.post("/buy.html", urlencodedParser, (req, res) => {
+    if (!req.body) {
+    	return res.sendStatus(400);
+    }
+    console.log(req.body);
+
+    enginePower = req.body.enginePower;
+    let registerSign = req.body.registerSign;
+	let VIN = req.body.VIN;
+	let carCategory = req.body.carCategory;
+	let Marka = req.body.Marka;
+	let Model = req.body.Model;
+	let releaseDate = req.body.releaseDate;
+
+	const connection = mysql.createConnection({
+	  database: "cyberInsurance",
+	  host: "localhost",
+	  user: "root",
+	  password: ""
+	});
+
+	sql = `SET NAMES 'utf8'`;
+
+	connection.query(sql, function(err, res) {
+	    if (err) {
+	    	console.log(err);
+	    }
+	    console.log(res);
+	});
+
+    //генерируем номер страхового договора
+    let contractID = Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000;
+
+    (function isFreeContractID() {
+	    sql = `SELECT * FROM Polices WHERE contractID = '${contractID}'`;
+
+		connection.query(sql, function(err, res) {
+		    if (err) {
+		    	console.log(err);
+		    }
+		    console.log(res);
+		    if (res.length) {
+		    	contractID = Math.floor(Math.random() * (9999999999999 - 1000000000000 + 1)) + 1000000000000;
+		    	isFreeContractID();
+		    }
+		});
+    }());   
+
+    if (enginePower <= 50) {
+    	engineCoef = 0.6;
+    } else if (enginePower <= 70) {
+    	engineCoef = 1;
+    } else if (enginePower <= 100) {
+    	engineCoef = 1.1;
+    } else if (enginePower <= 120) {
+    	engineCoef = 1.2;
+    } else if (enginePower <= 150) {
+    	engineCoef = 1.4;
+    } else if (enginePower > 150) {
+    	engineCoef = 1.6;
+    } else {
+    	return res.render('cars', {incorrectValue: "Введено неверное значение мощности двигателя!"});
+    }
+
+    OSAGOPrice = baseValue * engineCoef;
+
+	sql = `INSERT INTO Car(userID, contractID, registerSign, VIN, carCategory, Marka, Model, enginePower, releaseDate) 
+		VALUES('${data.ID}', '${contractID}', '${registerSign}', '${VIN}', '${carCategory}', '${Marka}', '${Model}', 
+		'${enginePower}', '${releaseDate}')`;
+
+	connection.query(sql, function(err, res) {
+	    if (err) {
+	    	console.log(err);
+	    }
+	    console.log(res);
+	});
+
+	let policeID = 1; //ID полиса типа ОСАГО
+
+	let conclusionDate = new Date().toISOString().substr(0, 10); //получаем текущую дату, сохраняя только год
+	//добавляем год к полученной дате
+	let expirationDate = conclusionDate.replace(new Date().getFullYear(), new Date().getFullYear() + 1);
+
+	sql = `INSERT INTO Polices(userID, policeID, contractID, conclusionDate, expirationDate) VALUES('${data.ID}',
+		'${policeID}', '${contractID}', '${conclusionDate}', '${expirationDate}')`;
+
+	connection.query(sql, function(err, res) {
+	    if (err) {
+	    	console.log(err);
+	    }
+	    console.log(res);
+	});
+
+	connection.end();
+
+    res.render('buy', {successful: `Cтоимость ОСАГО составит ${OSAGOPrice} руб.`});
 
 });
 

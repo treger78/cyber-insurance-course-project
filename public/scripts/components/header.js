@@ -12,6 +12,6 @@ header.innerHTML = `
 	</div>
 	<div class="headerRightSection">
 		<div class="headerAbout"><a href="#about">О компании</a></div>
-		<div class="headerLogin"><a href="auth.html">Войти</a></div>
+		<div class="headerLogin"><a href="auth.html">Кабинет</a></div>
 	</div>
 `

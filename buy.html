@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="public/styles/normalize.css">
+	<link rel="stylesheet" type="text/css" href="public/styles/header.css">
+	<link rel="stylesheet" type="text/css" href="public/styles/footer.css">	
+	<link rel="stylesheet" type="text/css" href="public/styles/buy.css">
+	<title>Cyber Insurance</title>
+</head>
+<body>
+	<header class="header"></header>
+	<main>
+		<h1>Заполните форму для оформления полиса ОСАГО</h1>
+		<form method="post" action="/buy.html">
+			<div>
+				<label>Регистрационный знак (Гос. номер)</label>
+				<input type="text" name="registerSign" required>
+			</div>
+			<div>
+				<label>VIN</label>
+				<input type="text" name="VIN" required>
+			</div>
+			<div>
+				<label>Категория ТС</label>
+				<input type="text" name="carCategory" required>
+			</div>
+			<div>
+				<label>Марка</label>
+				<input type="text" name="Marka" required>
+			</div>
+			<div>
+				<label>Модель</label>
+				<input type="text" name="Model" required>
+			</div>
+			<div>
+				<label>Мощность двигателя</label>
+				<input type="text" name="enginePower" required minlength="2" maxlength="3">
+				<span>{{incorrectValue}}</span>
+			</div>
+			<div>
+				<label>Дата выпуска ТС</label>
+				<input type="text" name="releaseDate" required placeholder="в формате ГГГГ-ММ-ДД" required minlength="10" maxlength="10">
+			</div>																		
+			<button type="submit">Оформить</button>
+			<div>{{successful}}</div>
+		</form>		
+	</main>
+	<footer class="footer"></footer>
+	<script type="text/javascript" src="public/scripts/components/header.js"></script>
+	<script type="text/javascript" src="public/scripts/components/footer.js"></script>	
+</body>
+</html>
