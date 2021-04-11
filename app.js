@@ -50,7 +50,7 @@ let data = {
 
 let sql;
 
-function getData() {
+function getDBData() {
 	return new Promise(function(resolve, reject) {
 
 		const connection = mysql.createConnection({
@@ -88,7 +88,7 @@ function getData() {
 
 //отправляем данные со страницы в БД
 app.post("/registr.html", urlencodedParser, (req, res) => {
-    if(!req.body) return res.sendStatus(400);
+    if (!req.body) return res.sendStatus(400);
     //выводим полученные в результате запроса данные в коносль (node)
     console.log(req.body);
     //посылаем и отображаем данные на странице (клиент)
@@ -160,7 +160,7 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 			    if (err) console.log(err);
 			    console.log(res);
 			});		
-		    getData()
+		    getDBData()
 		    .then(() => {
 				res.render('personal', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
 					birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
@@ -175,7 +175,7 @@ app.post("/registr.html", urlencodedParser, (req, res) => {
 let isSuccessAuth = false;
 
 app.post("/auth.html", urlencodedParser, (req, res) => {
-    if(!req.body) return res.sendStatus(400);
+    if (!req.body) return res.sendStatus(400);
     console.log(req.body);
 
 	data.email = req.body.email;
@@ -216,7 +216,7 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 	}())
 	.then(() => {
 		if (isSuccessAuth) {
-			getData()
+			getDBData()
 			.then(() => {
 				res.render('personal', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
 					birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
@@ -230,6 +230,68 @@ app.post("/auth.html", urlencodedParser, (req, res) => {
 
 app.get("/personal.html", urlencodedParser, (req, res) => {
     res.render('personal', {});
+});
+
+let currentUserEmail;
+
+app.post("/personal.html", urlencodedParser, (req, res) => {
+    if (!req.body) return res.sendStatus(400);
+    console.log(req.body);
+
+	data.secondName = req.body.secondName;
+	data.firstName = req.body.firstName;
+	data.patronymic = req.body.patronymic;
+	data.birthDate = req.body.birthDate;
+	data.mobilePhone = req.body.mobilePhone;
+	data.email = req.body.email;
+
+	currentUserEmail = data.email;	
+
+	res.render('personal-change', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
+		birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
+});
+
+app.get("/personal-change.html", urlencodedParser, (req, res) => {
+    res.render('personal-change', {});
+});
+
+app.post("/personal-change.html", urlencodedParser, (req, res) => {
+    if (!req.body) return res.sendStatus(400);
+    console.log(req.body);
+
+	data.secondName = req.body.secondName;
+	data.firstName = req.body.firstName;
+	data.patronymic = req.body.patronymic;
+	data.birthDate = req.body.birthDate;
+	data.mobilePhone = req.body.mobilePhone;
+	data.email = req.body.email;
+
+	const connection = mysql.createConnection({
+	  database: "cyberInsurance",
+	  host: "localhost",
+	  user: "root",
+	  password: ""
+	});
+
+	sql = `SET NAMES 'utf8'`;
+
+	connection.query(sql, function(err, res) {
+	    if (err) console.log(err);
+	    console.log(res);
+	});
+
+	sql = `UPDATE Users SET secondName = '${data.secondName}', firstName = '${data.firstName}', patronymic = '${data.patronymic}',
+		birthDate = '${data.birthDate}', mobilePhone = '${data.mobilePhone}', email = '${data.email}' 
+		WHERE email = '${currentUserEmail}'`;
+
+	connection.query(sql, function(err, res) {
+	    if (err) console.log(err);
+	    console.log(res);
+	});
+
+	res.render('personal', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
+		birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});		
+
 });
 
 //"слушаем" запросы на порте 3000
