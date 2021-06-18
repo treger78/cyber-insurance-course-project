@@ -282,8 +282,24 @@ app.post("/personal.html", urlencodedParser, (req, res) => {
 
 	currentUserEmail = data.email;	
 
-	res.render('personal-change', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
-		birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
+	if (data.secondName == undefined || data.secondName == '') {
+		
+		data.secondName = '';
+		data.firstName = '';
+		data.patronymic = '';
+		data.birthDate = '';
+		data.mobilePhone = 0;
+		data.email = '';
+		data.password = '';
+		data.ID = -1;
+
+		res.sendFile(__dirname + "/index.html");
+
+	} else {
+		res.render('personal-change', {secondName: data.secondName, firstName: data.firstName, patronymic: data.patronymic, 
+			birthDate: data.birthDate, mobilePhone: data.mobilePhone, email: data.email});
+	}
+
 });
 
 app.get("/personal-change.html", urlencodedParser, (req, res) => {
